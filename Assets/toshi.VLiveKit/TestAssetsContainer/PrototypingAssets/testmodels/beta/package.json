@@ -1,0 +1,13 @@
+{
+  "author": "Keijiro Takahashi",
+  "dependencies": { },
+  "description": "A rigged low-poly human model.",
+  "displayName": "Beta",
+  "keywords": [ "unity" ],
+  "license": "Unlicense",
+  "name": "jp.keijiro.beta",
+  "repository": "github:keijiro/jp.keijiro.beta",
+  "unity": "2018.1",
+  "unityRelease": "0f1",
+  "version": "1.0.2"
+}
