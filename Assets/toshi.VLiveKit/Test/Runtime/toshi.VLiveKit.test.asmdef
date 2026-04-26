@@ -1,0 +1,16 @@
+{
+  "name": "toshi.VLiveKit.test",
+  "rootNamespace": "toshi.VLiveKit.test",
+  "references": [
+    "Unity.Cinemachine"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

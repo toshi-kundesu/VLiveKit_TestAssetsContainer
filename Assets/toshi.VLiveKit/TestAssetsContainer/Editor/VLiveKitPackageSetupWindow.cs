@@ -5,13 +5,15 @@ using UnityEngine;
 
 public class VLiveKitPackageSetupWindow : EditorWindow
 {
-    private string packageName = "com.toshi.vlivekit.newpackage";
-    private string displayName = "VLiveKit NewPackage";
+    [SerializeField] private DefaultAsset targetFolder;
+
+    private string packageName = "com.toshi.vlivekit.artnetlink";
+    private string displayName = "VLiveKit ArtNetLink";
     private string version = "0.0.1";
     private string description = "VLiveKit package.";
 
-    private string asmdefName = "toshi.VLiveKit.NewPackage";
-    private string rootNamespace = "toshi.VLiveKit.NewPackage";
+    private string asmdefName = "toshi.VLiveKit.ArtNetLink";
+    private string rootNamespace = "toshi.VLiveKit.ArtNetLink";
 
     private bool createRuntimeFolder = true;
     private bool createEditorFolder = true;
@@ -25,7 +27,17 @@ public class VLiveKitPackageSetupWindow : EditorWindow
 
     private void OnGUI()
     {
-        EditorGUILayout.LabelField("Package Setup Generator", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("VLiveKit Package Setup", EditorStyles.boldLabel);
+
+        EditorGUILayout.Space();
+
+        targetFolder = (DefaultAsset)EditorGUILayout.ObjectField(
+            "Target Folder",
+            targetFolder,
+            typeof(DefaultAsset),
+            false
+        );
+
         EditorGUILayout.Space();
 
         packageName = EditorGUILayout.TextField("Package Name", packageName);
@@ -46,37 +58,45 @@ public class VLiveKitPackageSetupWindow : EditorWindow
 
         EditorGUILayout.Space();
 
-        if (GUILayout.Button("Create In Selected Folder", GUILayout.Height(36)))
+        if (GUILayout.Button("Create Package Setup", GUILayout.Height(36)))
         {
             CreateSetup();
         }
 
         EditorGUILayout.HelpBox(
-            "Projectビューでフォルダを選択 → 実行\n" +
-            "そのフォルダ直下が package root になります。",
+            "Target Folder に package root にしたいフォルダをドラッグ&ドロップしてください。\n" +
+            "例: Assets/toshi.VLiveKit/ArtNetLink",
             MessageType.Info
         );
     }
 
     private void CreateSetup()
     {
-        string rootPath = GetSelectedFolderPath();
+        string rootPath = GetTargetFolderPath();
 
         if (string.IsNullOrEmpty(rootPath))
         {
-            EditorUtility.DisplayDialog("Error", "フォルダを選択してください", "OK");
+            EditorUtility.DisplayDialog(
+                "Error",
+                "Target Folder に有効なフォルダを指定してください。",
+                "OK"
+            );
             return;
         }
 
-        Debug.Log($"[VLiveKit] Create package at: {rootPath}");
-
         CreatePackageJson(rootPath);
 
-        string runtimePath = createRuntimeFolder ? Path.Combine(rootPath, "Runtime") : rootPath;
+        string runtimePath = createRuntimeFolder
+            ? Path.Combine(rootPath, "Runtime")
+            : rootPath;
+
         string editorPath = Path.Combine(rootPath, "Editor");
 
-        if (createRuntimeFolder) Directory.CreateDirectory(runtimePath);
-        if (createEditorFolder) Directory.CreateDirectory(editorPath);
+        if (createRuntimeFolder)
+            Directory.CreateDirectory(runtimePath);
+
+        if (createEditorFolder)
+            Directory.CreateDirectory(editorPath);
 
         CreateRuntimeAsmdef(runtimePath);
 
@@ -85,29 +105,27 @@ public class VLiveKitPackageSetupWindow : EditorWindow
 
         AssetDatabase.Refresh();
 
-        EditorUtility.DisplayDialog("Done", "Package setup created!", "OK");
+        EditorUtility.DisplayDialog(
+            "Done",
+            $"Created package setup in:\n{rootPath}",
+            "OK"
+        );
     }
 
-    // ⭐ここが今回の本質
-    private string GetSelectedFolderPath()
+    private string GetTargetFolderPath()
     {
-        Object selected = Selection.activeObject;
-
-        if (selected == null)
+        if (targetFolder == null)
             return null;
 
-        string path = AssetDatabase.GetAssetPath(selected);
+        string path = AssetDatabase.GetAssetPath(targetFolder);
 
         if (string.IsNullOrEmpty(path))
             return null;
 
-        // フォルダならそのまま使う
-        if (AssetDatabase.IsValidFolder(path))
-            return path.Replace("\\", "/");
+        if (!AssetDatabase.IsValidFolder(path))
+            return null;
 
-        // ファイルなら親フォルダ
-        string parent = Path.GetDirectoryName(path);
-        return parent?.Replace("\\", "/");
+        return path.Replace("\\", "/");
     }
 
     private void CreatePackageJson(string rootPath)
@@ -191,7 +209,7 @@ $@"{{
 
         if (File.Exists(path) && !overwrite)
         {
-            Debug.LogWarning($"[VLiveKit] Skip existing: {path}");
+            Debug.LogWarning($"[VLiveKit] Skipped existing file: {path}");
             return;
         }
 
