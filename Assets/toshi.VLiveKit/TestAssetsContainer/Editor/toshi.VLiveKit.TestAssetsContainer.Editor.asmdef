@@ -1,0 +1,19 @@
+{
+    "name": "toshi.VLiveKit.TestAssetsContainer.Editor",
+    "rootNamespace": "toshi.VLiveKit.TestAssetsContainer.Editor",
+    "references": [
+        "toshi.VLiveKit.TestAssetsContainer",
+        "Unity.Timeline"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

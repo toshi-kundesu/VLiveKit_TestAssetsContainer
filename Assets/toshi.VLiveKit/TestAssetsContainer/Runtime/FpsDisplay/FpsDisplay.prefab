@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &42617424514822318
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6347828319986106992}
+  - component: {fileID: 992336309330957630}
+  m_Layer: 0
+  m_Name: FpsDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6347828319986106992
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42617424514822318}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.916492, y: 0.5945263, z: -3.2055092}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &992336309330957630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42617424514822318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a66b27824bddcc44a6b7b8d18bc2535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frameType: 0
+  displayWidth: 500
+  displayHeight: 500
+  fontSize: 48
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  updateInterval: 0.5
+  isShowFps: 1
+  displayX: 100
+  displayY: 37.6
+  circleSize: 54.2
+  circleOffsetX: 241.3
+  circleOffsetY: 39.6
+  playModeText: PLAY
+  editorModeText: EDITOR
+  isShowElapsedTime: 1
+  ltcFontSize: 48
+  ltcFontColor: {r: 0.49799785, g: 1, b: 0.4575472, a: 1}
+  ltcDisplayX: 54.4
+  ltcDisplayY: 36
+  editorLtcFontColor: {r: 1, g: 0.34082586, b: 0, a: 1}
+  timelineDirector: {fileID: 0}
+  useTimeline: 1
+  fpsText: {fileID: 0}
+  fpsDisplayX: 373
+  fpsDisplayY: 36.68
+  colorPalette: {fileID: 11400000, guid: e4b95f9288a83b34ab8b690e0862f17c, type: 2}
+  bottomText: 'SCENE: VJ Test'
+  bottomTextX: 0
+  bottomTextY: -24.32
+  bottomTextColor: {r: 0.5924529, g: 0.5890994, b: 0.5890994, a: 1}
+  circleSpacing: 25.2
+  paletteOffsetX: 80.3
+  paletteOffsetY: 32.5
