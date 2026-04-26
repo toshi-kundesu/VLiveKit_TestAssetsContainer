@@ -1,0 +1,22 @@
+TextureObjectFieldWithPreview {
+
+}
+
+TextureObjectFieldWithPreview .sth-field-flex-item-1 {
+    width: var(--sth-field-basis-width);
+    height: var(--sth-field-basis-width);
+}
+
+TextureObjectFieldWithPreview Image {
+    width: 100%;
+    height: 100%;
+    background-color: #202020;
+    --border-shadow-color: #101010;
+    --border-highlight-color: #303030;
+    border-radius: 2px;
+    border-width: 1px;
+    border-top-color: var(--border-shadow-color);
+    border-left-color: var(--border-shadow-color);
+    border-bottom-color: var(--border-highlight-color);
+    border-right-color: var(--border-highlight-color);
+}
