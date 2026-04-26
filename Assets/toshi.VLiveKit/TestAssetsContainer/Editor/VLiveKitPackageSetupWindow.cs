@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class VLiveKitPackageSetupWindow : EditorWindow
 {
-    private string packageName = "com.toshi.vlivekit.cameraunit";
-    private string displayName = "VLiveKit Camera Unit";
+    private string packageName = "com.toshi.vlivekit.newpackage";
+    private string displayName = "VLiveKit NewPackage";
     private string version = "0.0.1";
     private string description = "VLiveKit package.";
-    private string asmdefName = "toshi.VLiveKit.CameraUnit";
-    private string rootNamespace = "toshi.VLiveKit.Photography";
+
+    private string asmdefName = "toshi.VLiveKit.NewPackage";
+    private string rootNamespace = "toshi.VLiveKit.NewPackage";
 
     private bool createRuntimeFolder = true;
     private bool createEditorFolder = true;
@@ -24,8 +25,7 @@ public class VLiveKitPackageSetupWindow : EditorWindow
 
     private void OnGUI()
     {
-        EditorGUILayout.LabelField("Create package.json / asmdef", EditorStyles.boldLabel);
-
+        EditorGUILayout.LabelField("Package Setup Generator", EditorStyles.boldLabel);
         EditorGUILayout.Space();
 
         packageName = EditorGUILayout.TextField("Package Name", packageName);
@@ -46,14 +46,14 @@ public class VLiveKitPackageSetupWindow : EditorWindow
 
         EditorGUILayout.Space();
 
-        if (GUILayout.Button("Create In Selected Folder", GUILayout.Height(32)))
+        if (GUILayout.Button("Create In Selected Folder", GUILayout.Height(36)))
         {
             CreateSetup();
         }
 
         EditorGUILayout.HelpBox(
-            "Projectビューで package root にしたいフォルダを選択してから実行。\n" +
-            "例: Assets/toshi.VLiveKit/VLiveCameraUnit",
+            "Projectビューでフォルダを選択 → 実行\n" +
+            "そのフォルダ直下が package root になります。",
             MessageType.Info
         );
     }
@@ -64,30 +64,31 @@ public class VLiveKitPackageSetupWindow : EditorWindow
 
         if (string.IsNullOrEmpty(rootPath))
         {
-            EditorUtility.DisplayDialog("Error", "Projectビューでフォルダを選択してください。", "OK");
+            EditorUtility.DisplayDialog("Error", "フォルダを選択してください", "OK");
             return;
         }
+
+        Debug.Log($"[VLiveKit] Create package at: {rootPath}");
 
         CreatePackageJson(rootPath);
 
         string runtimePath = createRuntimeFolder ? Path.Combine(rootPath, "Runtime") : rootPath;
-        string editorPath = createEditorFolder ? Path.Combine(rootPath, "Editor") : Path.Combine(rootPath, "Editor");
+        string editorPath = Path.Combine(rootPath, "Editor");
 
-        Directory.CreateDirectory(runtimePath);
-        Directory.CreateDirectory(editorPath);
+        if (createRuntimeFolder) Directory.CreateDirectory(runtimePath);
+        if (createEditorFolder) Directory.CreateDirectory(editorPath);
 
         CreateRuntimeAsmdef(runtimePath);
-        CreateEditorAsmdef(editorPath);
+
+        if (createEditorFolder)
+            CreateEditorAsmdef(editorPath);
 
         AssetDatabase.Refresh();
 
-        EditorUtility.DisplayDialog(
-            "Done",
-            $"Created package setup in:\n{rootPath}",
-            "OK"
-        );
+        EditorUtility.DisplayDialog("Done", "Package setup created!", "OK");
     }
 
+    // ⭐ここが今回の本質
     private string GetSelectedFolderPath()
     {
         Object selected = Selection.activeObject;
@@ -100,10 +101,13 @@ public class VLiveKitPackageSetupWindow : EditorWindow
         if (string.IsNullOrEmpty(path))
             return null;
 
-        if (File.Exists(path))
-            path = Path.GetDirectoryName(path);
+        // フォルダならそのまま使う
+        if (AssetDatabase.IsValidFolder(path))
+            return path.Replace("\\", "/");
 
-        return path?.Replace("\\", "/");
+        // ファイルなら親フォルダ
+        string parent = Path.GetDirectoryName(path);
+        return parent?.Replace("\\", "/");
     }
 
     private void CreatePackageJson(string rootPath)
@@ -187,12 +191,12 @@ $@"{{
 
         if (File.Exists(path) && !overwrite)
         {
-            Debug.LogWarning($"Skipped existing file: {path}");
+            Debug.LogWarning($"[VLiveKit] Skip existing: {path}");
             return;
         }
 
         File.WriteAllText(path, content);
-        Debug.Log($"Created: {path}");
+        Debug.Log($"[VLiveKit] Created: {path}");
     }
 }
 #endif
