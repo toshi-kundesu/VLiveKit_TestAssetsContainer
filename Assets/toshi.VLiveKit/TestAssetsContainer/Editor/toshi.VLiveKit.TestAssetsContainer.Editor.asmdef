@@ -3,7 +3,8 @@
     "rootNamespace": "toshi.VLiveKit.TestAssetsContainer.Editor",
     "references": [
         "toshi.VLiveKit.TestAssetsContainer",
-        "Unity.Timeline"
+        "Unity.Timeline",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [
         "Editor"
