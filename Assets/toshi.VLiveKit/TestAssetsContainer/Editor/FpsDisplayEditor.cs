@@ -9,100 +9,13 @@ using TMPro;
 [CanEditMultipleObjects]
 public class FpsDisplayEditor : Editor
 {
-    private SerializedProperty displayMethod;
-
-    private SerializedProperty updateInterval;
-    private SerializedProperty measureInEditMode;
-    private SerializedProperty dontDestroyOnLoad;
-
-    private SerializedProperty prefix;
-    private SerializedProperty separator;
-    private SerializedProperty decimalPlaces;
-    private SerializedProperty showMilliseconds;
-    private SerializedProperty showAverage;
-    private SerializedProperty showMinMax;
-
-    private SerializedProperty anchor;
-    private SerializedProperty anchoredPosition;
-    private SerializedProperty uiSize;
-
-    private SerializedProperty referenceWidth;
-    private SerializedProperty referenceHeight;
-    private SerializedProperty onGuiSize;
-    private SerializedProperty drawBackground;
-    private SerializedProperty backgroundColor;
-    private SerializedProperty drawShadow;
-    private SerializedProperty shadowOffset;
-    private SerializedProperty shadowColor;
-
-    private SerializedProperty fontSize;
-    private SerializedProperty fontColor;
-
-    private SerializedProperty useColorThresholds;
-    private SerializedProperty warningFps;
-    private SerializedProperty criticalFps;
-    private SerializedProperty goodColor;
-    private SerializedProperty warningColor;
-    private SerializedProperty criticalColor;
-
-    private SerializedProperty uiText;
-    private SerializedProperty tmpText;
-
-    private void OnEnable()
-    {
-        displayMethod = serializedObject.FindProperty("displayMethod");
-
-        updateInterval = serializedObject.FindProperty("updateInterval");
-        measureInEditMode = serializedObject.FindProperty("measureInEditMode");
-        dontDestroyOnLoad = serializedObject.FindProperty("dontDestroyOnLoad");
-
-        prefix = serializedObject.FindProperty("prefix");
-        separator = serializedObject.FindProperty("separator");
-        decimalPlaces = serializedObject.FindProperty("decimalPlaces");
-        showMilliseconds = serializedObject.FindProperty("showMilliseconds");
-        showAverage = serializedObject.FindProperty("showAverage");
-        showMinMax = serializedObject.FindProperty("showMinMax");
-
-        anchor = serializedObject.FindProperty("anchor");
-        anchoredPosition = serializedObject.FindProperty("anchoredPosition");
-        uiSize = serializedObject.FindProperty("uiSize");
-
-        referenceWidth = serializedObject.FindProperty("referenceWidth");
-        referenceHeight = serializedObject.FindProperty("referenceHeight");
-        onGuiSize = serializedObject.FindProperty("onGuiSize");
-        drawBackground = serializedObject.FindProperty("drawBackground");
-        backgroundColor = serializedObject.FindProperty("backgroundColor");
-        drawShadow = serializedObject.FindProperty("drawShadow");
-        shadowOffset = serializedObject.FindProperty("shadowOffset");
-        shadowColor = serializedObject.FindProperty("shadowColor");
-
-        fontSize = serializedObject.FindProperty("fontSize");
-        fontColor = serializedObject.FindProperty("fontColor");
-
-        useColorThresholds = serializedObject.FindProperty("useColorThresholds");
-        warningFps = serializedObject.FindProperty("warningFps");
-        criticalFps = serializedObject.FindProperty("criticalFps");
-        goodColor = serializedObject.FindProperty("goodColor");
-        warningColor = serializedObject.FindProperty("warningColor");
-        criticalColor = serializedObject.FindProperty("criticalColor");
-
-        uiText = serializedObject.FindProperty("uiText");
-        tmpText = serializedObject.FindProperty("tmpText");
-    }
-
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
         EditorGUI.BeginChangeCheck();
 
-        DrawDisplaySection();
-        DrawMeasureSection();
-        DrawContentSection();
-        DrawLayoutSection();
-        DrawStyleSection();
-        DrawReferenceSection();
-        DrawUtilityButtons();
+        DrawPropertiesExcluding(serializedObject, "m_Script");
 
         bool changed = EditorGUI.EndChangeCheck();
 
@@ -112,161 +25,25 @@ public class FpsDisplayEditor : Editor
         {
             RefreshTargets();
         }
-    }
 
-    private void DrawDisplaySection()
-    {
-        EditorGUILayout.LabelField("表示方式", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(displayMethod);
-
-        FpsDisplay.DisplayMethod method =
-            (FpsDisplay.DisplayMethod)displayMethod.enumValueIndex;
-
-        if (method == FpsDisplay.DisplayMethod.OnGUI)
-        {
-            EditorGUILayout.HelpBox(
-                "OnGUI は即席デバッグには便利ですが、常時表示や本番寄りの検証では TextMeshPro 表示を推奨します。",
-                MessageType.Info
-            );
-        }
-
-        EditorGUILayout.Space(8);
-    }
-
-    private void DrawMeasureSection()
-    {
-        EditorGUILayout.LabelField("計測", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(updateInterval);
-        EditorGUILayout.PropertyField(measureInEditMode);
-        EditorGUILayout.PropertyField(dontDestroyOnLoad);
-
-        EditorGUILayout.Space(8);
-    }
-
-    private void DrawContentSection()
-    {
-        EditorGUILayout.LabelField("表示内容", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(prefix);
-        EditorGUILayout.PropertyField(separator);
-        EditorGUILayout.PropertyField(decimalPlaces);
-        EditorGUILayout.PropertyField(showMilliseconds);
-        EditorGUILayout.PropertyField(showAverage);
-        EditorGUILayout.PropertyField(showMinMax);
-
-        EditorGUILayout.Space(8);
-    }
-
-    private void DrawLayoutSection()
-    {
-        EditorGUILayout.LabelField("レイアウト", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(anchor);
-        EditorGUILayout.PropertyField(anchoredPosition);
-        EditorGUILayout.PropertyField(uiSize);
-
-        FpsDisplay.DisplayMethod method =
-            (FpsDisplay.DisplayMethod)displayMethod.enumValueIndex;
-
-        if (method == FpsDisplay.DisplayMethod.OnGUI)
-        {
-            EditorGUILayout.PropertyField(referenceWidth);
-            EditorGUILayout.PropertyField(referenceHeight);
-            EditorGUILayout.PropertyField(onGuiSize);
-
-            EditorGUILayout.Space(4);
-            EditorGUILayout.PropertyField(drawBackground);
-
-            if (drawBackground.boolValue)
-            {
-                EditorGUILayout.PropertyField(backgroundColor);
-            }
-
-            EditorGUILayout.PropertyField(drawShadow);
-
-            if (drawShadow.boolValue)
-            {
-                EditorGUILayout.PropertyField(shadowOffset);
-                EditorGUILayout.PropertyField(shadowColor);
-            }
-        }
-
-        EditorGUILayout.Space(8);
-    }
-
-    private void DrawStyleSection()
-    {
-        EditorGUILayout.LabelField("スタイル", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(fontSize);
-        EditorGUILayout.PropertyField(fontColor);
-
-        EditorGUILayout.Space(4);
-        EditorGUILayout.PropertyField(useColorThresholds);
-
-        if (useColorThresholds.boolValue)
-        {
-            EditorGUILayout.PropertyField(warningFps);
-            EditorGUILayout.PropertyField(criticalFps);
-            EditorGUILayout.PropertyField(goodColor);
-            EditorGUILayout.PropertyField(warningColor);
-            EditorGUILayout.PropertyField(criticalColor);
-        }
-
-        EditorGUILayout.Space(8);
-    }
-
-    private void DrawReferenceSection()
-    {
-        EditorGUILayout.LabelField("参照", EditorStyles.boldLabel);
-
-        FpsDisplay.DisplayMethod method =
-            (FpsDisplay.DisplayMethod)displayMethod.enumValueIndex;
-
-        if (method == FpsDisplay.DisplayMethod.UI_Text)
-        {
-            EditorGUILayout.PropertyField(uiText);
-
-            if (uiText.objectReferenceValue == null)
-            {
-                EditorGUILayout.HelpBox(
-                    "UI Text の参照がありません。下のボタンで作成・割り当てできます。",
-                    MessageType.Warning
-                );
-            }
-        }
-        else if (method == FpsDisplay.DisplayMethod.UI_TextMeshPro)
-        {
-            EditorGUILayout.PropertyField(tmpText);
-
-            if (tmpText.objectReferenceValue == null)
-            {
-                EditorGUILayout.HelpBox(
-                    "TextMeshProUGUI の参照がありません。下のボタンで作成・割り当てできます。",
-                    MessageType.Warning
-                );
-            }
-        }
-        else
-        {
-            EditorGUILayout.PropertyField(uiText);
-            EditorGUILayout.PropertyField(tmpText);
-        }
-
-        EditorGUILayout.Space(8);
+        EditorGUILayout.Space(10);
+        DrawUtilityButtons();
     }
 
     private void DrawUtilityButtons()
     {
-        EditorGUILayout.LabelField("ツール", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Tools", EditorStyles.boldLabel);
 
         using (new EditorGUILayout.HorizontalScope())
         {
-            if (GUILayout.Button("Text を作成/割り当て"))
-            {
-                CreateAndBindLabel(false);
-            }
-
             if (GUILayout.Button("TMP を作成/割り当て"))
             {
                 CreateAndBindLabel(true);
+            }
+
+            if (GUILayout.Button("Text を作成/割り当て"))
+            {
+                CreateAndBindLabel(false);
             }
         }
 
@@ -274,7 +51,7 @@ public class FpsDisplayEditor : Editor
         {
             if (GUILayout.Button("参照を自動取得"))
             {
-                foreach (Object obj in targets)
+                foreach (UnityEngine.Object obj in targets)
                 {
                     FpsDisplay display = (FpsDisplay)obj;
                     Undo.RecordObject(display, "Auto Assign FPS Display References");
@@ -290,24 +67,53 @@ public class FpsDisplayEditor : Editor
             }
         }
 
-        if (GUILayout.Button("統計をリセット"))
+        using (new EditorGUILayout.HorizontalScope())
         {
-            foreach (Object obj in targets)
+            if (GUILayout.Button("統計をリセット"))
+            {
+                foreach (UnityEngine.Object obj in targets)
+                {
+                    FpsDisplay display = (FpsDisplay)obj;
+                    Undo.RecordObject(display, "Reset FPS Display Stats");
+                    display.ResetStats();
+                    display.ForceRefresh();
+                    EditorUtility.SetDirty(display);
+                }
+            }
+
+            if (GUILayout.Button("Leak Watch リセット"))
+            {
+                foreach (UnityEngine.Object obj in targets)
+                {
+                    FpsDisplay display = (FpsDisplay)obj;
+                    Undo.RecordObject(display, "Reset FPS Display Leak Watch");
+                    display.ResetLeakWatch();
+                    display.ForceRefresh();
+                    EditorUtility.SetDirty(display);
+                }
+            }
+        }
+
+        if (GUILayout.Button("GC.Collect 実行 / 検証用"))
+        {
+            foreach (UnityEngine.Object obj in targets)
             {
                 FpsDisplay display = (FpsDisplay)obj;
-                Undo.RecordObject(display, "Reset FPS Display Stats");
-                display.ResetStats();
-                display.ForceRefresh();
+                Undo.RecordObject(display, "Force GC Collect For FPS Display Debug");
+                display.ForceGarbageCollectionForDebug();
                 EditorUtility.SetDirty(display);
             }
         }
 
-        EditorGUILayout.Space(4);
+        EditorGUILayout.HelpBox(
+            "GC.Collect は一時停止を発生させる可能性があります。リーク検証時のみ使ってください。",
+            MessageType.Warning
+        );
     }
 
     private void RefreshTargets()
     {
-        foreach (Object obj in targets)
+        foreach (UnityEngine.Object obj in targets)
         {
             FpsDisplay display = (FpsDisplay)obj;
             if (!display)
@@ -324,7 +130,7 @@ public class FpsDisplayEditor : Editor
     {
         serializedObject.ApplyModifiedProperties();
 
-        foreach (Object obj in targets)
+        foreach (UnityEngine.Object obj in targets)
         {
             FpsDisplay display = (FpsDisplay)obj;
             if (!display)
@@ -341,15 +147,19 @@ public class FpsDisplayEditor : Editor
             if (useTmp)
             {
                 TextMeshProUGUI tmp = labelObject.GetComponent<TextMeshProUGUI>();
+
                 so.FindProperty("displayMethod").enumValueIndex =
                     (int)FpsDisplay.DisplayMethod.UI_TextMeshPro;
+
                 so.FindProperty("tmpText").objectReferenceValue = tmp;
             }
             else
             {
                 Text text = labelObject.GetComponent<Text>();
+
                 so.FindProperty("displayMethod").enumValueIndex =
                     (int)FpsDisplay.DisplayMethod.UI_Text;
+
                 so.FindProperty("uiText").objectReferenceValue = text;
             }
 
@@ -357,6 +167,7 @@ public class FpsDisplayEditor : Editor
 
             display.ForceRefresh();
             EditorUtility.SetDirty(display);
+
             Selection.activeGameObject = labelObject;
         }
 
@@ -365,21 +176,26 @@ public class FpsDisplayEditor : Editor
 
     private static GameObject CreateLabelObject(Transform parent, bool useTmp)
     {
-        string objectName = useTmp ? "FPS Display TMP" : "FPS Display Text";
+        string objectName = useTmp ? "PC Status HUD TMP" : "PC Status HUD Text";
 
         GameObject labelObject = new GameObject(objectName, typeof(RectTransform));
-        Undo.RegisterCreatedObjectUndo(labelObject, "Create FPS Display Label");
+        Undo.RegisterCreatedObjectUndo(labelObject, "Create Performance HUD Label");
 
         labelObject.transform.SetParent(parent, false);
 
         RectTransform rectTransform = labelObject.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(420f, 80f);
+        rectTransform.sizeDelta = new Vector2(860f, 320f);
+        rectTransform.anchorMin = new Vector2(0f, 1f);
+        rectTransform.anchorMax = new Vector2(0f, 1f);
+        rectTransform.pivot = new Vector2(0f, 1f);
+        rectTransform.anchoredPosition = new Vector2(10f, -10f);
 
         if (useTmp)
         {
             TextMeshProUGUI tmp = Undo.AddComponent<TextMeshProUGUI>(labelObject);
             tmp.text = "FPS: --";
-            tmp.fontSize = 32f;
+            tmp.fontSize = 28f;
+            tmp.color = Color.white;
             tmp.raycastTarget = false;
             tmp.enableWordWrapping = false;
             tmp.overflowMode = TextOverflowModes.Overflow;
@@ -394,7 +210,7 @@ public class FpsDisplayEditor : Editor
         {
             Text text = Undo.AddComponent<Text>(labelObject);
             text.text = "FPS: --";
-            text.fontSize = 32;
+            text.fontSize = 28;
             text.color = Color.white;
             text.raycastTarget = false;
             text.alignment = TextAnchor.UpperLeft;
@@ -402,6 +218,12 @@ public class FpsDisplayEditor : Editor
             text.verticalOverflow = VerticalWrapMode.Overflow;
 
             Font builtinFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+
+            if (builtinFont == null)
+            {
+                builtinFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            }
+
             if (builtinFont != null)
             {
                 text.font = builtinFont;
@@ -422,7 +244,12 @@ public class FpsDisplayEditor : Editor
             }
         }
 
-        Canvas existingCanvas = Object.FindObjectOfType<Canvas>();
+#if UNITY_2023_1_OR_NEWER
+        Canvas existingCanvas = UnityEngine.Object.FindFirstObjectByType<Canvas>();
+#else
+        Canvas existingCanvas = UnityEngine.Object.FindObjectOfType<Canvas>();
+#endif
+
         if (existingCanvas)
         {
             return existingCanvas;
@@ -449,13 +276,13 @@ public class FpsDisplayEditor : Editor
         return canvas;
     }
 
-    [MenuItem("GameObject/UI/FPS Display/TextMeshPro", false, 10)]
+    [MenuItem("GameObject/UI/Performance HUD/TextMeshPro", false, 10)]
     private static void CreateTmpDisplayFromMenu()
     {
         CreateDisplayFromMenu(true);
     }
 
-    [MenuItem("GameObject/UI/FPS Display/Legacy Text", false, 11)]
+    [MenuItem("GameObject/UI/Performance HUD/Legacy Text", false, 11)]
     private static void CreateTextDisplayFromMenu()
     {
         CreateDisplayFromMenu(false);
@@ -474,15 +301,19 @@ public class FpsDisplayEditor : Editor
         if (useTmp)
         {
             TextMeshProUGUI tmp = labelObject.GetComponent<TextMeshProUGUI>();
+
             so.FindProperty("displayMethod").enumValueIndex =
                 (int)FpsDisplay.DisplayMethod.UI_TextMeshPro;
+
             so.FindProperty("tmpText").objectReferenceValue = tmp;
         }
         else
         {
             Text text = labelObject.GetComponent<Text>();
+
             so.FindProperty("displayMethod").enumValueIndex =
                 (int)FpsDisplay.DisplayMethod.UI_Text;
+
             so.FindProperty("uiText").objectReferenceValue = text;
         }
 
