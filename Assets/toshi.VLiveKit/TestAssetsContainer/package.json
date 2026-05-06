@@ -1,25 +1,25 @@
-{
-  "name": "com.toshi.vlivekit.testassetscontainer",
-  "version": "0.0.15",
-  "displayName": "VLiveKit Test Assets Container",
-  "description": "Container for temporary, test, and proxy assets used during virtual live production. Includes rough models, validation textures, debug materials, and non-production resources.",
-  "unity": "2022.3",
-  "author": {
-    "name": "toshi"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/toshi-kundesu/VLiveKit_TestAssetsContainer.git"
-  },
-  "license": "Unlicense",
-  "keywords": [
-    "Unity",
-    "VLiveKit",
-    "Virtual Live",
-    "Test",
-    "Debug",
-    "Proxy",
-    "Container",
-    "Assets"
-  ]
+﻿{
+    "name":  "com.toshi.vlivekit.testassetscontainer",
+    "version":  "0.1.0",
+    "displayName":  "VLiveKit Test Assets Container",
+    "description":  "Container for temporary, test, and proxy assets used during virtual live production. Includes rough models, validation textures, debug materials, and non-production resources.",
+    "unity":  "2022.3",
+    "author":  {
+                   "name":  "toshi"
+               },
+    "repository":  {
+                       "type":  "git",
+                       "url":  "git+https://github.com/toshi-kundesu/VLiveKit_TestAssetsContainer.git"
+                   },
+    "license":  "Unlicense",
+    "keywords":  [
+                     "Unity",
+                     "VLiveKit",
+                     "Virtual Live",
+                     "Test",
+                     "Debug",
+                     "Proxy",
+                     "Container",
+                     "Assets"
+                 ]
 }
