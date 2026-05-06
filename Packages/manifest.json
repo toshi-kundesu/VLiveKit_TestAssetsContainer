@@ -1,4 +1,4 @@
-﻿{
+{
     "dependencies":  {
                          "com.unity.feature.development":  "1.0.1",
                          "com.unity.render-pipelines.high-definition":  "14.0.8",
