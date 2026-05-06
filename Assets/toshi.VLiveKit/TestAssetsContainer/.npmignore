@@ -1,5 +1,6 @@
 HDRI/
 HDRI.meta
-mixamo/
-mixamo.meta
 *.tgz
+!Samples~/
+!Samples~/**
+!Samples~.meta
