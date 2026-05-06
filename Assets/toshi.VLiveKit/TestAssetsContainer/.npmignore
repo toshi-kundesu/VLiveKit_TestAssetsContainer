@@ -1,6 +1,3 @@
 HDRI/
 HDRI.meta
 *.tgz
-!Samples~/
-!Samples~/**
-!Samples~.meta
