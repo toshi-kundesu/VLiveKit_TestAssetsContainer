@@ -29,6 +29,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js for npm registry
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
       - name: Resolve release version
         id: version
         shell: bash
@@ -108,6 +114,18 @@ jobs:
         shell: bash
         run: |
           npm pack
+
+      - name: Publish to npm registry
+        shell: bash
+        run: |
+          if [[ -z "$NODE_AUTH_TOKEN" ]]; then
+            echo "::error::Missing NPM_TOKEN repository secret. Create an npm automation token and save it as NPM_TOKEN."
+            exit 1
+          fi
+
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
