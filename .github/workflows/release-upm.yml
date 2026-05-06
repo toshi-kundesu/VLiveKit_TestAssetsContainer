@@ -17,6 +17,7 @@ permissions:
 env:
   PACKAGE_ROOT: Assets/toshi.VLiveKit/TestAssetsContainer
   UPM_BRANCH: upm
+  UPM_VERSION_BRANCH_PREFIX: upm-
 
 jobs:
   release:
@@ -104,7 +105,7 @@ jobs:
       - name: Push UPM branch
         shell: bash
         run: |
-          upm_version_branch="upm/${RELEASE_TAG}"
+          upm_version_branch="${UPM_VERSION_BRANCH_PREFIX}${RELEASE_TAG}"
           git push origin "$UPM_BRANCH" --force
           git push origin "HEAD:refs/heads/$upm_version_branch" --force
         env:
