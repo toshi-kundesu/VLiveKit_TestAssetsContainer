@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag, for example v0.0.2"
+        description: "Release tag, for example v0.0.7"
         required: true
         type: string
 
@@ -16,19 +16,16 @@ permissions:
 
 env:
   PACKAGE_ROOT: Assets/toshi.VLiveKit/TestAssetsContainer
-  UPM_BRANCH: upm
-  UPM_VERSION_BRANCH_PREFIX: upm-
+  PACKAGE_WORKDIR: /tmp/upm-package
 
 jobs:
   release:
-    name: Build UPM branch and GitHub Release
+    name: Publish scoped registry package
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js for npm registry
         uses: actions/setup-node@v4
@@ -47,7 +44,7 @@ jobs:
           fi
 
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
-            echo "::error::Tag must look like v0.0.2 or v0.0.2-preview.1: $tag"
+            echo "::error::Tag must look like v0.0.7 or v0.0.7-preview.1: $tag"
             exit 1
           fi
 
@@ -55,42 +52,18 @@ jobs:
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Validate package root
+      - name: Prepare package contents
         shell: bash
         run: |
           test -f "$PACKAGE_ROOT/package.json"
 
-      - name: Keep repository-level files
-        shell: bash
-        run: |
-          mkdir -p /tmp/upm-release-files
-          cp README.md /tmp/upm-release-files/README.md
-          cp LICENSE /tmp/upm-release-files/LICENSE
+          rm -rf "$PACKAGE_WORKDIR"
+          mkdir -p "$PACKAGE_WORKDIR"
+          cp -a "$PACKAGE_ROOT"/. "$PACKAGE_WORKDIR"/
+          cp README.md "$PACKAGE_WORKDIR/README.md"
+          cp LICENSE "$PACKAGE_WORKDIR/LICENSE"
 
-      - name: Split package into UPM branch
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git branch -D "$UPM_BRANCH" 2>/dev/null || true
-          git subtree split --prefix="$PACKAGE_ROOT" -b "$UPM_BRANCH"
-          git checkout "$UPM_BRANCH"
-
-      - name: Prepare UPM branch contents
-        shell: bash
-        run: |
-          node -e '
-            const fs = require("fs");
-            const version = process.env.RELEASE_VERSION;
-            const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
-            packageJson.version = version;
-            fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2) + "\n");
-          '
-
-          cp /tmp/upm-release-files/README.md README.md
-          cp /tmp/upm-release-files/LICENSE LICENSE
-          cat > README.md.meta <<'EOF'
+          cat > "$PACKAGE_WORKDIR/README.md.meta" <<'EOF'
           fileFormatVersion: 2
           guid: 61f1b63d2b074d6ba8a0c026b03f36e0
           DefaultImporter:
@@ -99,7 +72,7 @@ jobs:
             assetBundleName:
             assetBundleVariant:
           EOF
-          cat > LICENSE.meta <<'EOF'
+          cat > "$PACKAGE_WORKDIR/LICENSE.meta" <<'EOF'
           fileFormatVersion: 2
           guid: 9a7cdb7dd2434d3f8ca30a31a90cb0de
           DefaultImporter:
@@ -109,33 +82,30 @@ jobs:
             assetBundleVariant:
           EOF
 
-          if [[ -d Samples ]]; then
-            rm -rf Samples~
-            mv Samples Samples~
+          if [[ -d "$PACKAGE_WORKDIR/Samples" ]]; then
+            rm -rf "$PACKAGE_WORKDIR/Samples~"
+            mv "$PACKAGE_WORKDIR/Samples" "$PACKAGE_WORKDIR/Samples~"
           fi
 
-          git add .
-          git commit -m "Release $RELEASE_TAG" || true
+          node -e '
+            const fs = require("fs");
+            const path = process.env.PACKAGE_WORKDIR + "/package.json";
+            const packageJson = JSON.parse(fs.readFileSync(path, "utf8"));
+            packageJson.version = process.env.RELEASE_VERSION;
+            fs.writeFileSync(path, JSON.stringify(packageJson, null, 2) + "\n");
+          '
         env:
-          RELEASE_TAG: ${{ steps.version.outputs.tag }}
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
-
-      - name: Push UPM branch
-        shell: bash
-        run: |
-          upm_version_branch="${UPM_VERSION_BRANCH_PREFIX}${RELEASE_TAG}"
-          git push origin "$UPM_BRANCH" --force
-          git push origin "HEAD:refs/heads/$upm_version_branch" --force
-        env:
-          RELEASE_TAG: ${{ steps.version.outputs.tag }}
 
       - name: Pack UPM tarball
         id: pack
         shell: bash
+        working-directory: ${{ env.PACKAGE_WORKDIR }}
         run: |
           npm pack --json > /tmp/npm-pack.json
           tarball="$(node -e 'const fs = require("fs"); const pack = JSON.parse(fs.readFileSync("/tmp/npm-pack.json", "utf8")); console.log(pack[0].filename);')"
           echo "tarball=$tarball" >> "$GITHUB_OUTPUT"
+          echo "tarball_path=$PACKAGE_WORKDIR/$tarball" >> "$GITHUB_OUTPUT"
 
       - name: Publish to npm registry
         shell: bash
@@ -145,7 +115,7 @@ jobs:
             exit 1
           fi
 
-          npm publish "${{ steps.pack.outputs.tarball }}" --access public
+          npm publish "${{ steps.pack.outputs.tarball_path }}" --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -155,4 +125,4 @@ jobs:
           tag_name: ${{ steps.version.outputs.tag }}
           name: ${{ steps.version.outputs.tag }}
           generate_release_notes: true
-          files: ${{ steps.pack.outputs.tarball }}
+          files: ${{ steps.pack.outputs.tarball_path }}
