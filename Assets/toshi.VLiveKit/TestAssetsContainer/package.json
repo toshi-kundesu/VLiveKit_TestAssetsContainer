@@ -1,32 +1,32 @@
-{
-    "name": "com.toshi.vlivekit.testassetscontainer",
-    "version": "0.0.2",
-    "displayName": "VLiveKit Test Assets Container",
-    "description": "Container for temporary, test, and proxy assets used during virtual live production. Includes rough models, validation textures, debug materials, and non-production resources.",
-    "unity": "2022.3",
-    "author": {
-      "name": "toshi"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/toshi-kundesu/VLiveKit_TestAssetsContainer.git"
-    },
-    "license": "Unlicense",
-    "keywords": [
-      "Unity",
-      "VLiveKit",
-      "Virtual Live",
-      "Test",
-      "Debug",
-      "Proxy",
-      "Container",
-      "Assets"
-    ],
-    "samples": [
-      {
-        "displayName": "Tiny Sample",
-        "description": "A small sample scene for checking package import behavior.",
-        "path": "Samples~/Tiny Sample"
-      }
-    ]
-  }
+﻿{
+    "name":  "com.toshi.vlivekit.testassetscontainer",
+    "version":  "0.0.2",
+    "displayName":  "VLiveKit Test Assets Container",
+    "description":  "Container for temporary, test, and proxy assets used during virtual live production. Includes rough models, validation textures, debug materials, and non-production resources.",
+    "unity":  "2022.3",
+    "author":  {
+                   "name":  "toshi"
+               },
+    "repository":  {
+                       "type":  "git",
+                       "url":  "git+https://github.com/toshi-kundesu/VLiveKit_TestAssetsContainer.git"
+                   },
+    "license":  "Unlicense",
+    "keywords":  [
+                     "Unity",
+                     "VLiveKit",
+                     "Virtual Live",
+                     "Test",
+                     "Debug",
+                     "Proxy",
+                     "Container",
+                     "Assets"
+                 ],
+    "samples":  [
+                    {
+                        "displayName":  "Tiny Sample",
+                        "description":  "A small sample scene for checking package import behavior.",
+                        "path":  "Samples~/Tiny Sample"
+                    }
+                ]
+}
