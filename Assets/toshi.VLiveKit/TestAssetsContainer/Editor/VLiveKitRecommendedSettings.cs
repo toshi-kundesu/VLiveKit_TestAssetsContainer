@@ -11,7 +11,7 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
     public sealed class VLiveKitRecommendedSettings : EditorWindow
     {
         private const string AdditionalPropertiesPreferenceKey = "General.ShowAllAdditionalProperties";
-        private const string MenuRoot = "Tools/VLiveKit/Recommended Settings";
+        private const string MenuRoot = "Window/toshi/VLiveKit/Recommended Settings";
 
         [MenuItem(MenuRoot + "/Open")]
         public static void Open()

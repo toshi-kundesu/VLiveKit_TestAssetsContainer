@@ -1,3 +1,0 @@
-HDRP
-Direct3D11
-

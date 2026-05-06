@@ -74,11 +74,16 @@ namespace lilToon
             string currentRPPath = lilDirectoryManager.GetCurrentRPPath();
             if(File.Exists(currentRPPath))
             {
-                var srRP = new StreamReader(currentRPPath);
-                string shaderRP = srRP.ReadLine();
-                string shaderAPI = srRP.ReadLine();
-                string shaderLTCGI = srRP.ReadLine();
-                srRP.Close();
+                string shaderRP;
+                string shaderAPI;
+                string shaderLTCGI;
+                using(var fsRP = new FileStream(currentRPPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using(var srRP = new StreamReader(fsRP))
+                {
+                    shaderRP = srRP.ReadLine();
+                    shaderAPI = srRP.ReadLine();
+                    shaderLTCGI = srRP.ReadLine();
+                }
 
                 bool shouldRewrite = false;
                 string projectRP = lilRenderPipelineReader.GetRP().ToString();
@@ -88,11 +93,13 @@ namespace lilToon
                 #else
                 string projectLTCGI = "";
                 #endif
-                var swRP = new StreamWriter(currentRPPath,false);
-                swRP.WriteLine(projectRP);
-                swRP.WriteLine(projectAPI);
-                swRP.WriteLine(projectLTCGI);
-                swRP.Close();
+                using(var fsRP = new FileStream(currentRPPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                using(var swRP = new StreamWriter(fsRP))
+                {
+                    swRP.WriteLine(projectRP);
+                    swRP.WriteLine(projectAPI);
+                    swRP.WriteLine(projectLTCGI);
+                }
 
                 if(shaderRP != projectRP)
                 {
