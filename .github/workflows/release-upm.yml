@@ -90,6 +90,24 @@ jobs:
 
           cp /tmp/upm-release-files/README.md README.md
           cp /tmp/upm-release-files/LICENSE LICENSE
+          cat > README.md.meta <<'EOF'
+          fileFormatVersion: 2
+          guid: 61f1b63d2b074d6ba8a0c026b03f36e0
+          DefaultImporter:
+            externalObjects: {}
+            userData:
+            assetBundleName:
+            assetBundleVariant:
+          EOF
+          cat > LICENSE.meta <<'EOF'
+          fileFormatVersion: 2
+          guid: 9a7cdb7dd2434d3f8ca30a31a90cb0de
+          DefaultImporter:
+            externalObjects: {}
+            userData:
+            assetBundleName:
+            assetBundleVariant:
+          EOF
 
           if [[ -d Samples ]]; then
             rm -rf Samples~
