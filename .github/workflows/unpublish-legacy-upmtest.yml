@@ -1,0 +1,32 @@
+name: Unpublish Legacy UPM Test Package
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/unpublish-legacy-upmtest.yml"
+
+jobs:
+  unpublish:
+    name: Unpublish com.toshi.vlivekit-upmtest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js for npm registry
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Unpublish legacy package
+        shell: bash
+        run: |
+          if [[ -z "$NODE_AUTH_TOKEN" ]]; then
+            echo "::error::Missing NPM_TOKEN repository secret."
+            exit 1
+          fi
+
+          npm unpublish com.toshi.vlivekit-upmtest --force
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
