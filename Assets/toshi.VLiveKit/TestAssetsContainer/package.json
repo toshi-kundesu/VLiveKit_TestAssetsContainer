@@ -21,5 +21,12 @@
       "Proxy",
       "Container",
       "Assets"
+    ],
+    "samples": [
+      {
+        "displayName": "Tiny Sample",
+        "description": "A small sample scene for checking package import behavior.",
+        "path": "Samples~/Tiny Sample"
+      }
     ]
   }
