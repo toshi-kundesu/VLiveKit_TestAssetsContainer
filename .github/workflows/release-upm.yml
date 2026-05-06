@@ -1,0 +1,118 @@
+name: Release UPM Package
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v0.0.2"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  PACKAGE_ROOT: Assets/toshi.VLiveKit/TestAssetsContainer
+  UPM_BRANCH: upm
+
+jobs:
+  release:
+    name: Build UPM branch and GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release version
+        id: version
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            tag="${{ inputs.tag }}"
+          else
+            tag="${GITHUB_REF_NAME}"
+          fi
+
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag must look like v0.0.2 or v0.0.2-preview.1: $tag"
+            exit 1
+          fi
+
+          version="${tag#v}"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Validate package root
+        shell: bash
+        run: |
+          test -f "$PACKAGE_ROOT/package.json"
+
+      - name: Keep repository-level files
+        shell: bash
+        run: |
+          mkdir -p /tmp/upm-release-files
+          cp README.md /tmp/upm-release-files/README.md
+          cp LICENSE /tmp/upm-release-files/LICENSE
+
+      - name: Split package into UPM branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git branch -D "$UPM_BRANCH" 2>/dev/null || true
+          git subtree split --prefix="$PACKAGE_ROOT" -b "$UPM_BRANCH"
+          git checkout "$UPM_BRANCH"
+
+      - name: Prepare UPM branch contents
+        shell: bash
+        run: |
+          node -e '
+            const fs = require("fs");
+            const version = process.env.RELEASE_VERSION;
+            const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            packageJson.version = version;
+            fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2) + "\n");
+          '
+
+          cp /tmp/upm-release-files/README.md README.md
+          cp /tmp/upm-release-files/LICENSE LICENSE
+
+          if [[ -d Samples ]]; then
+            rm -rf Samples~
+            mv Samples Samples~
+          fi
+
+          git add .
+          git commit -m "Release $RELEASE_TAG" || true
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+
+      - name: Push UPM branch
+        shell: bash
+        run: |
+          upm_version_branch="upm/${RELEASE_TAG}"
+          git push origin "$UPM_BRANCH" --force
+          git push origin "HEAD:refs/heads/$upm_version_branch" --force
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+
+      - name: Pack UPM tarball
+        shell: bash
+        run: |
+          npm pack
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
+          files: "*.tgz"
