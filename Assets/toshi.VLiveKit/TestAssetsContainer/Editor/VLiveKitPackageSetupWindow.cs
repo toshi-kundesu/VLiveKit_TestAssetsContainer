@@ -19,7 +19,7 @@ public class VLiveKitPackageSetupWindow : EditorWindow
     private bool createEditorFolder = true;
     private bool overwrite = false;
 
-    [MenuItem("Window/toshi/VLiveKit/Create Package Setup")]
+    [MenuItem("toshi/VLiveKit/Create Package Setup")]
     public static void Open()
     {
         GetWindow<VLiveKitPackageSetupWindow>("VLiveKit Package Setup");
