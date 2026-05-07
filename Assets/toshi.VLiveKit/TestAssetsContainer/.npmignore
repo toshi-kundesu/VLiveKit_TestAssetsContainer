@@ -1,3 +1,8 @@
-HDRI/
-HDRI.meta
+Art/HDRI/PolyHaven/HDRI/*
+!Art/HDRI/PolyHaven/HDRI/photo_studio_01_4k.hdr
+!Art/HDRI/PolyHaven/HDRI/photo_studio_01_4k.hdr.meta
+!Art/HDRI/PolyHaven/HDRI/studio_small_03_4k.hdr
+!Art/HDRI/PolyHaven/HDRI/studio_small_03_4k.hdr.meta
+!Art/HDRI/PolyHaven/HDRI/colorful_studio_4k.hdr
+!Art/HDRI/PolyHaven/HDRI/colorful_studio_4k.hdr.meta
 *.tgz
