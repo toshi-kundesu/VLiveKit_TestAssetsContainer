@@ -2,7 +2,7 @@
   "name": "com.toshi.test",
   "displayName": "VLiveKit test",
   "version": "0.0.1",
-  "unity": "2022.3",
+  "unity": "6000.3",
   "description": "VLiveKit package.",
   "author": {
     "name": "toshi"
