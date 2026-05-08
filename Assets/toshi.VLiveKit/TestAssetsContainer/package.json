@@ -1,6 +1,6 @@
 {
     "name":  "com.toshi.vlivekit.testassetscontainer",
-    "version":  "0.1.2",
+    "version":  "0.1.3",
     "displayName":  "VLiveKit Test Assets Container",
     "description":  "Container for temporary, test, and proxy assets used during virtual live production. Includes rough models, validation textures, debug materials, and non-production resources.",
     "unity": "6000.3",
