@@ -5,7 +5,7 @@ VLiveKit の検証、仮組み、デバッグに使う test asset と utility �
 ## Package
 
 - Package name: `com.toshi.vlivekit.testassetscontainer`
-- Version: `0.0.15`
+- Version: `0.1.4`
 - Unity: 2022.3
 - Repository: https://github.com/toshi-kundesu/VLiveKit_TestAssetsContainer
 - Package root: `Assets/toshi.VLiveKit/TestAssetsContainer`
@@ -29,7 +29,7 @@ Unity の `Packages/manifest.json` の `dependencies` に追加します。
 ```json
 {
   "dependencies": {
-    "com.toshi.vlivekit.testassetscontainer": "https://github.com/toshi-kundesu/VLiveKit_TestAssetsContainer.git?path=/Assets/toshi.VLiveKit/TestAssetsContainer#main"
+    "com.toshi.vlivekit.testassetscontainer": "https://github.com/toshi-kundesu/VLiveKit_TestAssetsContainer.git?path=/Assets/toshi.VLiveKit/TestAssetsContainer#v0.1.4"
   }
 }
 ```
