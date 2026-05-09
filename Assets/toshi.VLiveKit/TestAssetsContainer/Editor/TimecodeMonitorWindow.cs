@@ -56,7 +56,7 @@ public sealed class TimecodeMonitorWindow : EditorWindow
 
     private void DrawLtcReaders()
     {
-        var readers = FindObjectsOfType<LTCread>();
+        var readers = FindObjectsByType<LTCread>(FindObjectsSortMode.None);
         EditorGUILayout.LabelField($"LTC Readers ({readers.Length})", EditorStyles.boldLabel);
 
         if (readers.Length == 0)
@@ -77,7 +77,7 @@ public sealed class TimecodeMonitorWindow : EditorWindow
 
     private void DrawOscReceivers()
     {
-        var receivers = FindObjectsOfType<LtcOscTimecodeReceiver>();
+        var receivers = FindObjectsByType<LtcOscTimecodeReceiver>(FindObjectsSortMode.None);
         EditorGUILayout.LabelField($"OSC Receivers ({receivers.Length})", EditorStyles.boldLabel);
 
         if (receivers.Length == 0)

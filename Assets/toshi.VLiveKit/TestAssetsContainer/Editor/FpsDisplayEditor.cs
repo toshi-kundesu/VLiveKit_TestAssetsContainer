@@ -165,7 +165,7 @@ public class FpsDisplayEditor : Editor
             tmp.fontSize = 28f;
             tmp.color = Color.white;
             tmp.raycastTarget = false;
-            tmp.enableWordWrapping = false;
+            tmp.textWrappingMode = TextWrappingModes.NoWrap;
             tmp.overflowMode = TextOverflowModes.Overflow;
             tmp.alignment = TextAlignmentOptions.TopLeft;
 
