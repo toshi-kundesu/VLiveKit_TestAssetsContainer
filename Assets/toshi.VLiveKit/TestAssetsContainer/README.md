@@ -40,6 +40,17 @@ VLiveKit sandbox では submodule として `Packages/VLiveKit_TestAssetsContain
 
 - 本番配布 asset ではなく、開発・検証・仮組み向けの container です。
 
+## Editor Windows
+
+Open the package utility windows from:
+
+- `toshi > VLiveKit > Project > Recommended Settings > Open`
+- `toshi > VLiveKit > Test Assets > Timecode Monitor`
+
+Recommended Settings shows the current project status before applying changes. The camera layer section previews which existing layers will be kept and which empty user layers will receive `cam01` through `cam08`.
+
+Timecode Monitor lists active LTC readers and OSC timecode receivers in the current scene. The current runtime readers update in Play Mode, so enter Play Mode when you need live LTC or OSC values.
+
 ## License
 
 この package 独自のコードと asset は repository の `LICENSE` に従います。third-party asset を含む場合は、それぞれの license / README を確認してください。

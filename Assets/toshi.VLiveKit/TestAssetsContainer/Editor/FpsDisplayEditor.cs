@@ -1,9 +1,9 @@
 #if UNITY_EDITOR
 
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 [CustomEditor(typeof(FpsDisplay))]
 [CanEditMultipleObjects]
@@ -14,17 +14,13 @@ public class FpsDisplayEditor : Editor
         serializedObject.Update();
 
         EditorGUI.BeginChangeCheck();
-
         DrawPropertiesExcluding(serializedObject, "m_Script");
-
         bool changed = EditorGUI.EndChangeCheck();
 
         serializedObject.ApplyModifiedProperties();
 
         if (changed)
-        {
             RefreshTargets();
-        }
 
         EditorGUILayout.Space(10);
         DrawUtilityButtons();
@@ -32,83 +28,59 @@ public class FpsDisplayEditor : Editor
 
     private void DrawUtilityButtons()
     {
-        EditorGUILayout.LabelField("Tools", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Utilities", EditorStyles.boldLabel);
 
         using (new EditorGUILayout.HorizontalScope())
         {
-            if (GUILayout.Button("TMP を作成/割り当て"))
-            {
+            if (GUILayout.Button("Create TMP Label"))
                 CreateAndBindLabel(true);
-            }
 
-            if (GUILayout.Button("Text を作成/割り当て"))
-            {
+            if (GUILayout.Button("Create Text Label"))
                 CreateAndBindLabel(false);
-            }
         }
 
         using (new EditorGUILayout.HorizontalScope())
         {
-            if (GUILayout.Button("参照を自動取得"))
-            {
-                foreach (UnityEngine.Object obj in targets)
-                {
-                    FpsDisplay display = (FpsDisplay)obj;
-                    Undo.RecordObject(display, "Auto Assign FPS Display References");
-                    display.AutoAssignReferences();
-                    display.ForceRefresh();
-                    EditorUtility.SetDirty(display);
-                }
-            }
+            if (GUILayout.Button("Auto Assign References"))
+                ForEachTarget("Auto Assign FPS Display References", display => display.AutoAssignReferences());
 
-            if (GUILayout.Button("レイアウト反映"))
-            {
+            if (GUILayout.Button("Refresh Layout"))
                 RefreshTargets();
-            }
         }
 
         using (new EditorGUILayout.HorizontalScope())
         {
-            if (GUILayout.Button("統計をリセット"))
-            {
-                foreach (UnityEngine.Object obj in targets)
-                {
-                    FpsDisplay display = (FpsDisplay)obj;
-                    Undo.RecordObject(display, "Reset FPS Display Stats");
-                    display.ResetStats();
-                    display.ForceRefresh();
-                    EditorUtility.SetDirty(display);
-                }
-            }
+            if (GUILayout.Button("Reset Stats"))
+                ForEachTarget("Reset FPS Display Stats", display => display.ResetStats());
 
-            if (GUILayout.Button("Leak Watch リセット"))
-            {
-                foreach (UnityEngine.Object obj in targets)
-                {
-                    FpsDisplay display = (FpsDisplay)obj;
-                    Undo.RecordObject(display, "Reset FPS Display Leak Watch");
-                    display.ResetLeakWatch();
-                    display.ForceRefresh();
-                    EditorUtility.SetDirty(display);
-                }
-            }
+            if (GUILayout.Button("Reset Leak Watch"))
+                ForEachTarget("Reset FPS Display Leak Watch", display => display.ResetLeakWatch());
         }
 
-        if (GUILayout.Button("GC.Collect 実行 / 検証用"))
-        {
-            foreach (UnityEngine.Object obj in targets)
-            {
-                FpsDisplay display = (FpsDisplay)obj;
-                Undo.RecordObject(display, "Force GC Collect For FPS Display Debug");
-                display.ForceGarbageCollectionForDebug();
-                EditorUtility.SetDirty(display);
-            }
-        }
+        if (GUILayout.Button("Run GC.Collect"))
+            ForEachTarget("Force GC Collect For FPS Display Debug", display => display.ForceGarbageCollectionForDebug(), refresh: false);
 
         EditorGUILayout.HelpBox(
-            "GC.Collect は一時停止を発生させる可能性があります。リーク検証時のみ使ってください。",
-            MessageType.Warning
-        );
+            "GC.Collect is intended for leak-watch checks. Use it only when you want to sample memory behavior.",
+            MessageType.None);
+    }
+
+    private void ForEachTarget(string undoName, System.Action<FpsDisplay> action, bool refresh = true)
+    {
+        foreach (UnityEngine.Object obj in targets)
+        {
+            FpsDisplay display = (FpsDisplay)obj;
+            if (!display)
+                continue;
+
+            Undo.RecordObject(display, undoName);
+            action(display);
+
+            if (refresh)
+                display.ForceRefresh();
+
+            EditorUtility.SetDirty(display);
+        }
     }
 
     private void RefreshTargets()
@@ -117,9 +89,7 @@ public class FpsDisplayEditor : Editor
         {
             FpsDisplay display = (FpsDisplay)obj;
             if (!display)
-            {
                 continue;
-            }
 
             display.ForceRefresh();
             EditorUtility.SetDirty(display);
@@ -134,9 +104,7 @@ public class FpsDisplayEditor : Editor
         {
             FpsDisplay display = (FpsDisplay)obj;
             if (!display)
-            {
                 continue;
-            }
 
             Canvas canvas = FindOrCreateCanvas(display.transform);
             GameObject labelObject = CreateLabelObject(canvas.transform, useTmp);
@@ -202,9 +170,7 @@ public class FpsDisplayEditor : Editor
             tmp.alignment = TextAlignmentOptions.TopLeft;
 
             if (TMP_Settings.defaultFontAsset != null)
-            {
                 tmp.font = TMP_Settings.defaultFontAsset;
-            }
         }
         else
         {
@@ -218,16 +184,11 @@ public class FpsDisplayEditor : Editor
             text.verticalOverflow = VerticalWrapMode.Overflow;
 
             Font builtinFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
-
             if (builtinFont == null)
-            {
                 builtinFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            }
 
             if (builtinFont != null)
-            {
                 text.font = builtinFont;
-            }
         }
 
         return labelObject;
@@ -239,9 +200,7 @@ public class FpsDisplayEditor : Editor
         {
             Canvas parentCanvas = context.GetComponentInParent<Canvas>();
             if (parentCanvas)
-            {
                 return parentCanvas;
-            }
         }
 
 #if UNITY_2023_1_OR_NEWER
@@ -251,18 +210,15 @@ public class FpsDisplayEditor : Editor
 #endif
 
         if (existingCanvas)
-        {
             return existingCanvas;
-        }
 
         GameObject canvasObject = new GameObject(
-            "Debug Canvas",
+            "VLiveKit HUD Canvas",
             typeof(Canvas),
             typeof(CanvasScaler),
-            typeof(GraphicRaycaster)
-        );
+            typeof(GraphicRaycaster));
 
-        Undo.RegisterCreatedObjectUndo(canvasObject, "Create Debug Canvas");
+        Undo.RegisterCreatedObjectUndo(canvasObject, "Create VLiveKit HUD Canvas");
 
         Canvas canvas = canvasObject.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -276,13 +232,13 @@ public class FpsDisplayEditor : Editor
         return canvas;
     }
 
-    [MenuItem("GameObject/UI/Performance HUD/TextMeshPro", false, 10)]
+    [MenuItem("GameObject/UI/VLiveKit/Performance HUD/TextMeshPro", false, 10)]
     private static void CreateTmpDisplayFromMenu()
     {
         CreateDisplayFromMenu(true);
     }
 
-    [MenuItem("GameObject/UI/Performance HUD/Legacy Text", false, 11)]
+    [MenuItem("GameObject/UI/VLiveKit/Performance HUD/Legacy Text", false, 11)]
     private static void CreateTextDisplayFromMenu()
     {
         CreateDisplayFromMenu(false);

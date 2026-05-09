@@ -19,7 +19,10 @@ public class VLiveKitPackageSetupWindow : EditorWindow
     private bool createEditorFolder = true;
     private bool overwrite = false;
 
-    [MenuItem("toshi/VLiveKit/Development/Create Package Setup")]
+    private string statusMessage = "Ready.";
+    private int createdCount;
+    private int skippedCount;
+
     public static void Open()
     {
         GetWindow<VLiveKitPackageSetupWindow>("VLiveKit Package Setup");
@@ -63,10 +66,13 @@ public class VLiveKitPackageSetupWindow : EditorWindow
             CreateSetup();
         }
 
+        EditorGUILayout.Space(6);
+        EditorGUILayout.LabelField("Status", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField(statusMessage, EditorStyles.wordWrappedMiniLabel);
+
         EditorGUILayout.HelpBox(
-            "Target Folder に package root にしたいフォルダをドラッグ&ドロップしてください。\n" +
-            "例: Assets/toshi.VLiveKit/ArtNetLink",
-            MessageType.Info
+            "Select the package root folder, such as Assets/toshi.VLiveKit/ArtNetLink. Existing files are skipped unless overwrite is enabled.",
+            MessageType.None
         );
     }
 
@@ -76,21 +82,37 @@ public class VLiveKitPackageSetupWindow : EditorWindow
 
         if (string.IsNullOrEmpty(rootPath))
         {
-            EditorUtility.DisplayDialog(
-                "Error",
-                "Target Folder に有効なフォルダを指定してください。",
-                "OK"
-            );
+            statusMessage = "Select a valid package root folder.";
+            ShowNotification(new GUIContent("Select a valid target folder"));
             return;
         }
-
-        CreatePackageJson(rootPath);
 
         string runtimePath = createRuntimeFolder
             ? Path.Combine(rootPath, "Runtime")
             : rootPath;
 
         string editorPath = Path.Combine(rootPath, "Editor");
+
+        if (overwrite && WillOverwriteAnyFile(rootPath, runtimePath, editorPath))
+        {
+            bool confirmed = EditorUtility.DisplayDialog(
+                "Overwrite package setup files?",
+                "Existing package.json or asmdef files in the target folder may be replaced.",
+                "Create",
+                "Cancel"
+            );
+
+            if (!confirmed)
+            {
+                statusMessage = "Package setup unchanged.";
+                return;
+            }
+        }
+
+        createdCount = 0;
+        skippedCount = 0;
+
+        CreatePackageJson(rootPath);
 
         if (createRuntimeFolder)
             Directory.CreateDirectory(runtimePath);
@@ -105,11 +127,8 @@ public class VLiveKitPackageSetupWindow : EditorWindow
 
         AssetDatabase.Refresh();
 
-        EditorUtility.DisplayDialog(
-            "Done",
-            $"Created package setup in:\n{rootPath}",
-            "OK"
-        );
+        statusMessage = $"Package setup created in {rootPath}. Wrote {createdCount} file(s), skipped {skippedCount}.";
+        ShowNotification(new GUIContent("Package setup created"));
     }
 
     private string GetTargetFolderPath()
@@ -126,6 +145,20 @@ public class VLiveKitPackageSetupWindow : EditorWindow
             return null;
 
         return path.Replace("\\", "/");
+    }
+
+    private bool WillOverwriteAnyFile(string rootPath, string runtimePath, string editorPath)
+    {
+        if (File.Exists(Path.Combine(rootPath, "package.json")))
+            return true;
+
+        if (File.Exists(Path.Combine(runtimePath, asmdefName + ".asmdef")))
+            return true;
+
+        if (createEditorFolder && File.Exists(Path.Combine(editorPath, asmdefName + ".Editor.asmdef")))
+            return true;
+
+        return false;
     }
 
     private void CreatePackageJson(string rootPath)
@@ -209,11 +242,13 @@ $@"{{
 
         if (File.Exists(path) && !overwrite)
         {
-            Debug.LogWarning($"[VLiveKit] Skipped existing file: {path}");
+            skippedCount++;
+            Debug.Log($"[VLiveKit] Skipped existing file: {path}");
             return;
         }
 
         File.WriteAllText(path, content);
+        createdCount++;
         Debug.Log($"[VLiveKit] Created: {path}");
     }
 }

@@ -26,40 +26,35 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
             "cam08"
         };
 
+        private string statusMessage = "Ready.";
+
         [MenuItem(MenuRoot + "/Open")]
         public static void Open()
         {
             GetWindow<VLiveKitRecommendedSettings>("VLiveKit Settings");
         }
 
-        [MenuItem(MenuRoot + "/Apply Recommended Settings")]
         public static void ApplyRecommendedSettings()
         {
-            ApplyCoreRenderPipelineAdditionalProperties();
-            ApplyRunInBackground();
-            ApplyRecommendedCameraLayers(false);
-
-            Debug.Log("[VLiveKit] Applied recommended editor settings.");
-            EditorUtility.DisplayDialog(
-                "VLiveKit Recommended Settings",
-                "Recommended editor settings have been applied.\n\nCore Render Pipeline > Additional Properties: All Visible\nPlayer > Run In Background: Enabled\nCamera layers: cam01-cam08",
-                "OK"
-            );
+            string result = ApplyRecommendedSettingsCore();
+            Debug.Log($"[VLiveKit] {result}");
+            ShowWindowStatus(result, "Recommended settings applied");
         }
 
-        [MenuItem(MenuRoot + "/Apply Camera Layers cam01-cam08")]
         public static void ApplyRecommendedCameraLayersMenu()
         {
             if (!EditorUtility.DisplayDialog(
-                    "Apply VLiveKit Camera Layers",
-                    "This will add cam01-cam08 to empty User Layer slots only.\n\nExisting layer names are not overwritten. If your project already uses many custom layers, review Project Settings > Tags and Layers before applying.",
+                    "Apply Camera Layers",
+                    "Add cam01-cam08 to empty User Layer slots. Existing layer names stay unchanged.",
                     "Apply",
                     "Cancel"))
             {
                 return;
             }
 
-            ApplyRecommendedCameraLayers(true);
+            string result = ApplyRecommendedCameraLayers();
+            Debug.Log($"[VLiveKit] {result}");
+            ShowWindowStatus(result, "Camera layers checked");
         }
 
         private void OnGUI()
@@ -76,13 +71,20 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
             }
 
             EditorGUILayout.LabelField("Camera Layers", BuildCameraLayerStatusText());
-            EditorGUILayout.Toggle("Run In Background", PlayerSettings.runInBackground);
+            DrawCameraLayerPlan();
+
+            using (new EditorGUI.DisabledScope(true))
+            {
+                EditorGUILayout.Toggle("Run In Background", PlayerSettings.runInBackground);
+            }
 
             EditorGUILayout.Space();
 
             if (GUILayout.Button("Apply Recommended Settings", GUILayout.Height(36)))
             {
-                ApplyRecommendedSettings();
+                statusMessage = ApplyRecommendedSettingsCore();
+                Debug.Log($"[VLiveKit] {statusMessage}");
+                ShowNotification(new GUIContent("Recommended settings applied"));
             }
 
             if (GUILayout.Button("Apply Camera Layers cam01-cam08", GUILayout.Height(28)))
@@ -93,12 +95,28 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
             if (GUILayout.Button("Enable Run In Background", GUILayout.Height(28)))
             {
                 ApplyRunInBackground();
+                statusMessage = "Run In Background is enabled.";
+                ShowNotification(new GUIContent("Run In Background enabled"));
             }
 
+            EditorGUILayout.Space(6);
+            EditorGUILayout.LabelField("Status", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(statusMessage, EditorStyles.wordWrappedMiniLabel);
+
             EditorGUILayout.HelpBox(
-                "Sets Core Render Pipeline > Additional Properties > Visibility to All Visible, enables Player > Run In Background, and adds camera layers only to empty User Layer slots. Existing custom layers are preserved.",
-                MessageType.Info
+                "Applies Core Render Pipeline additional property visibility, Run In Background, and camera layers without replacing existing custom layer names.",
+                MessageType.None
             );
+        }
+
+        private static string ApplyRecommendedSettingsCore()
+        {
+            ApplyCoreRenderPipelineAdditionalProperties();
+            ApplyRunInBackground();
+            string cameraLayerResult = ApplyRecommendedCameraLayers();
+
+            return "Recommended settings applied. Core Render Pipeline additional properties are visible, Run In Background is enabled. "
+                   + cameraLayerResult;
         }
 
         private static void ApplyCoreRenderPipelineAdditionalProperties()
@@ -120,23 +138,23 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
             Debug.Log("[VLiveKit] Enabled Player > Resolution and Presentation > Run In Background.");
         }
 
-        private static void ApplyRecommendedCameraLayers(bool showDialog)
+        private static string ApplyRecommendedCameraLayers()
         {
             SerializedObject tagManager = LoadTagManager();
             if (tagManager == null)
             {
-                Debug.LogWarning("[VLiveKit] Could not load ProjectSettings/TagManager.asset.");
-                return;
+                return "Camera layers were not changed because TagManager.asset could not be loaded.";
             }
 
             SerializedProperty layers = tagManager.FindProperty("layers");
             if (layers == null || !layers.isArray)
             {
-                Debug.LogWarning("[VLiveKit] Could not find layer settings in TagManager.asset.");
-                return;
+                return "Camera layers were not changed because TagManager.asset did not expose a layer list.";
             }
 
             int addedCount = 0;
+            string blockedLayerName = null;
+
             foreach (string layerName in CameraLayerNames)
             {
                 if (HasLayer(layers, layerName))
@@ -147,13 +165,7 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
                 int emptyIndex = FindEmptyUserLayerIndex(layers);
                 if (emptyIndex < 0)
                 {
-                    string message = $"No empty User Layer slot remains. Could not add '{layerName}'. Existing layers were not overwritten.";
-                    Debug.LogWarning($"[VLiveKit] {message}");
-                    if (showDialog)
-                    {
-                        EditorUtility.DisplayDialog("VLiveKit Camera Layers", message, "OK");
-                    }
-
+                    blockedLayerName = layerName;
                     break;
                 }
 
@@ -164,13 +176,53 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
             tagManager.ApplyModifiedProperties();
             AssetDatabase.SaveAssets();
 
-            string result = $"Camera layers checked. Added {addedCount} layer(s). Existing layers were preserved.";
-            Debug.Log($"[VLiveKit] {result}");
-
-            if (showDialog)
+            if (!string.IsNullOrEmpty(blockedLayerName))
             {
-                EditorUtility.DisplayDialog("VLiveKit Camera Layers", result, "OK");
+                return $"Camera layers checked. Added {addedCount} layer(s). No empty User Layer slot remained for '{blockedLayerName}'. Existing layers were preserved.";
             }
+
+            return $"Camera layers checked. Added {addedCount} layer(s). Existing layers were preserved.";
+        }
+
+        private static void DrawCameraLayerPlan()
+        {
+            SerializedObject tagManager = LoadTagManager();
+            SerializedProperty layers = tagManager?.FindProperty("layers");
+            if (layers == null || !layers.isArray)
+            {
+                EditorGUILayout.HelpBox("Camera layer plan is unavailable because TagManager.asset could not be read.", MessageType.None);
+                return;
+            }
+
+            int emptySlots = CountEmptyUserLayerSlots(layers);
+            EditorGUILayout.LabelField("After Apply", $"{emptySlots} empty User Layer slot(s) available", EditorStyles.miniLabel);
+
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            {
+                string[] plannedLayers = CopyLayerValues(layers);
+                foreach (string layerName in CameraLayerNames)
+                {
+                    int existingIndex = FindLayerIndex(plannedLayers, layerName);
+                    if (existingIndex >= 0)
+                    {
+                        EditorGUILayout.LabelField(layerName, $"Keep existing Layer {existingIndex}", EditorStyles.miniLabel);
+                        continue;
+                    }
+
+                    int emptyIndex = FindEmptyUserLayerIndex(plannedLayers);
+                    if (emptyIndex >= 0)
+                    {
+                        plannedLayers[emptyIndex] = layerName;
+                        EditorGUILayout.LabelField(layerName, $"Add to empty Layer {emptyIndex}", EditorStyles.miniLabel);
+                    }
+                    else
+                    {
+                        EditorGUILayout.LabelField(layerName, "Not added; no empty User Layer slot", EditorStyles.miniLabel);
+                    }
+                }
+            }
+
+            EditorGUILayout.HelpBox("Existing layer names are preserved. Missing cam layers are assigned to empty User Layer slots only.", MessageType.None);
         }
 
         private static SerializedObject LoadTagManager()
@@ -205,6 +257,57 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
             return -1;
         }
 
+        private static string[] CopyLayerValues(SerializedProperty layers)
+        {
+            var values = new string[layers.arraySize];
+            for (int i = 0; i < layers.arraySize; i++)
+            {
+                values[i] = layers.GetArrayElementAtIndex(i).stringValue;
+            }
+
+            return values;
+        }
+
+        private static int FindLayerIndex(string[] layers, string layerName)
+        {
+            for (int i = 0; i < layers.Length; i++)
+            {
+                if (layers[i] == layerName)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private static int FindEmptyUserLayerIndex(string[] layers)
+        {
+            for (int i = 8; i < layers.Length; i++)
+            {
+                if (string.IsNullOrEmpty(layers[i]))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private static int CountEmptyUserLayerSlots(SerializedProperty layers)
+        {
+            int count = 0;
+            for (int i = 8; i < layers.arraySize; i++)
+            {
+                if (string.IsNullOrEmpty(layers.GetArrayElementAtIndex(i).stringValue))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
         private static string BuildCameraLayerStatusText()
         {
             SerializedObject tagManager = LoadTagManager();
@@ -216,6 +319,14 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
 
             int existingCount = CameraLayerNames.Count(layerName => HasLayer(layers, layerName));
             return $"{existingCount}/{CameraLayerNames.Length} configured";
+        }
+
+        private static void ShowWindowStatus(string status, string notification)
+        {
+            var window = GetWindow<VLiveKitRecommendedSettings>("VLiveKit Settings");
+            window.statusMessage = status;
+            window.ShowNotification(new GUIContent(notification));
+            window.Repaint();
         }
 
         private static bool TrySetCoreRenderPipelinePreference(bool visible)
@@ -241,7 +352,7 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
             }
             catch (Exception exception)
             {
-                Debug.LogWarning($"[VLiveKit] Failed to apply Core RP preference via setter. Falling back. {exception.Message}");
+                Debug.Log($"[VLiveKit] Core RP preference setter was unavailable. Falling back to editor preferences. {exception.Message}");
                 return false;
             }
         }
@@ -259,7 +370,7 @@ namespace toshi.VLiveKit.TestAssetsContainer.Editor
                 }
                 catch (Exception exception)
                 {
-                    Debug.LogWarning($"[VLiveKit] Failed to invoke additional properties callback: {method.DeclaringType?.FullName}.{method.Name}. {exception.Message}");
+                    Debug.Log($"[VLiveKit] Additional properties callback was skipped: {method.DeclaringType?.FullName}.{method.Name}. {exception.Message}");
                 }
             }
         }
