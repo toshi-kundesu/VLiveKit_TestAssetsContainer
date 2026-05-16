@@ -4,7 +4,9 @@
     "references": [
         "Cinemachine",
         "com.unity.cinemachine.editor",
+        "Unity.Collections",
         "Unity.InputSystem",
+        "Unity.Mathematics",
         "Unity.TextMeshPro",
         "UnityEngine.UI",
         "Unity.RenderPipelines.Core.Runtime",
