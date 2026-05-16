@@ -1,0 +1,29 @@
+{
+    "name": "toshi.VLiveKit.TestAssetsContainer.UnitySamples.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Cinemachine",
+        "com.unity.cinemachine.editor",
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Core.Editor",
+        "Unity.RenderPipelines.HighDefinition.Runtime",
+        "Unity.RenderPipelines.HighDefinition.Editor",
+        "Unity.ShaderGraph.Editor",
+        "Unity.VisualEffectGraph.Runtime",
+        "Unity.VisualEffectGraph.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
