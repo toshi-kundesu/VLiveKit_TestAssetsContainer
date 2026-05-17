@@ -277,7 +277,8 @@ MonoBehaviour:
   - {fileID: 49}
   m_OutputSlots:
   - {fileID: 50}
-  m_Subgraph: {fileID: 5371698745253816930, guid: 9da75de35c7d0fa44b64c83f0b1c0266, type: 3}
+  m_Subgraph: {fileID: 5371698745253816930, guid: 9da75de35c7d0fa44b64c83f0b1c0266,
+    type: 3}
 --- !u!114 &49
 MonoBehaviour:
   m_ObjectHideFlags: 0

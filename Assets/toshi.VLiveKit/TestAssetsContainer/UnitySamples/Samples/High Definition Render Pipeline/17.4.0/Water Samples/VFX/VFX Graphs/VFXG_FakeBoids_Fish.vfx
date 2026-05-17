@@ -158,7 +158,7 @@ MonoBehaviour:
     enumValues: []
     descendantCount: 0
   m_ImportDependencies: []
-  m_GraphVersion: 18
+  m_GraphVersion: 19
   m_ResourceVersion: 1
   m_SubgraphDependencies: []
   m_CategoryPath: 
@@ -174,10 +174,6 @@ VisualEffectResource:
     m_RendererSettings:
       motionVectorGenerationMode: 0
       shadowCastingMode: 0
-      rayTracingMode: 0
-      receiveShadows: 0
-      reflectionProbeUsage: 0
-      lightProbeUsage: 0
     m_CullingFlags: 3
     m_UpdateMode: 0
     m_PreWarmDeltaTime: 0.05
@@ -2066,8 +2062,8 @@ MonoBehaviour:
   m_UISuperCollapsed: 0
   m_InputSlots:
   - {fileID: 8926484042661614726}
-  - {fileID: 8926484042661614731}
   - {fileID: 8926484042661614732}
+  - {fileID: 8926484042661614731}
   - {fileID: 8926484042661614737}
   - {fileID: 8926484042661614738}
   - {fileID: 8926484042661614739}
@@ -2077,7 +2073,8 @@ MonoBehaviour:
   m_OutputSlots: []
   m_Disabled: 0
   m_ActivationSlot: {fileID: 8926484042661614743}
-  m_Subgraph: {fileID: 5371698748595113096, guid: ddaf70c4407578f4cb062ecee4298405, type: 3}
+  m_Subgraph: {fileID: 5371698748595113096, guid: ddaf70c4407578f4cb062ecee4298405,
+    type: 3}
 --- !u!114 &8926484042661614726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4428,6 +4425,7 @@ MonoBehaviour:
   sortingPriority: 0
   m_SubOutputs:
   - {fileID: 8926484042661614955}
+  useBaseColorMap: 3
   colorMapping: 0
   uvMode: 0
   flipbookLayout: 0
@@ -4463,7 +4461,8 @@ MonoBehaviour:
     - rid: 1001
       type: {class: ParticleShadingShaderGraph, ns: UnityEditor.VFX, asm: Unity.VisualEffectGraph.Editor}
       data:
-        shaderGraph: {fileID: 4333940904281232215, guid: 44fd2431f10cb084090158b47f681926, type: 3}
+        shaderGraph: {fileID: 4333940904281232215, guid: 44fd2431f10cb084090158b47f681926,
+          type: 3}
         materialSettings:
           m_PropertyNames:
           - _RenderQueueType

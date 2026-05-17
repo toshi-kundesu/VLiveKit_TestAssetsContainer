@@ -6,3 +6,9 @@ Art/HDRI/PolyHaven/HDRI/*
 !Art/HDRI/PolyHaven/HDRI/colorful_studio_4k.hdr
 !Art/HDRI/PolyHaven/HDRI/colorful_studio_4k.hdr.meta
 *.tgz
+com.hhotatea.avatar-pose-library/
+com.hhotatea.avatar-pose-library.meta
+UnitySamples/
+UnitySamples.meta
+HDRPSampleScene/
+HDRPSampleScene.meta

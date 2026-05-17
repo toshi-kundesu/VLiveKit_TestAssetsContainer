@@ -86,15 +86,6 @@ namespace toshi.VLiveKit.Utility
             vectorParameters.Add(param);
         }
 
-        // カスタムエディタを使用するために追加
-        void OnValidate()
-        {
-            foreach (var param in floatParameters)
-            {
-                param.value = param.value; // これでClampが実行されます
-            }
-            // Add similar validation if needed for colorParameters and vectorParameters
-        }
     }
 
 }

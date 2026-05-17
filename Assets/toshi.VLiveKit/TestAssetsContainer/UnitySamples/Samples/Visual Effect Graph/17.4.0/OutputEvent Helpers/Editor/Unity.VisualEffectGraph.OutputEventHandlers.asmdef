@@ -5,6 +5,7 @@
         "Unity.VisualEffectGraph.Runtime",
         "Unity.RenderPipelines.HighDefinition.Runtime",
         "Cinemachine",
+        "Unity.Cinemachine",
         "VFXGraph.OutputEventHandlers"
     ],
     "includePlatforms": [

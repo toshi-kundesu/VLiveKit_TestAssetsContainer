@@ -178,7 +178,7 @@ public sealed class LetterBoxDisplay : MonoBehaviour
         tmp.font     = blockFont ? blockFont : tmp.font;
         tmp.raycastTarget = false;
         tmp.alignment = TextAlignmentOptions.TopLeft;
-        tmp.enableWordWrapping = false;
+        tmp.textWrappingMode = TextWrappingModes.NoWrap;
         return tmp;
     }
 

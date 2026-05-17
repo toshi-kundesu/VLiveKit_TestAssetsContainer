@@ -159,9 +159,9 @@ Shader "Hidden/ltspass_lite_cutout"
     {
         Tags {"RenderType" = "HDLitShader"}
         HLSLINCLUDE
-            #define LIL_SRP_VERSION_MAJOR 14
-            #define LIL_SRP_VERSION_MINOR 0
-            #define LIL_SRP_VERSION_PATCH 8
+            #define LIL_SRP_VERSION_MAJOR 17
+            #define LIL_SRP_VERSION_MINOR 3
+            #define LIL_SRP_VERSION_PATCH 0
 
             #pragma target 4.5
             #pragma exclude_renderers gles gles3 glcore

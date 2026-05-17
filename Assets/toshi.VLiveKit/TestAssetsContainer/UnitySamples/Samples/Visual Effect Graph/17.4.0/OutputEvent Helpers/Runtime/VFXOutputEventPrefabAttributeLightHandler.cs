@@ -21,12 +21,14 @@ namespace UnityEngine.VFX.Utility
             var c = new Color(color.x, color.y, color.z) / intensity;
             intensity *= brightnessScale;
 
-            var light = GetComponent<Light>();
 #if VFX_OUTPUTEVENT_HDRP_10_0_0_OR_NEWER
             var hdlight = GetComponent<HDAdditionalLightData>();
             hdlight.SetColor(c);
-            light.intensity = LightUnitUtils.ConvertIntensity(light, intensity, light.lightUnit, LightUnitUtils.GetNativeLightUnit(light.type));
+#pragma warning disable 0618
+            hdlight.SetIntensity(intensity);
+#pragma warning restore 0618
 #else
+            var light = GetComponent<Light>();
             light.color = c;
             light.intensity = intensity;
 #endif

@@ -15,8 +15,10 @@ namespace toshi.VLiveKit.Utility
         [SerializeField]
         private bool isEnableInEditor = false;
         // 非エディタモードで有効にする？
+#pragma warning disable 0414
         [SerializeField]
         private bool isEnableInBuild = true;
+#pragma warning restore 0414
 
         void Start()
         {

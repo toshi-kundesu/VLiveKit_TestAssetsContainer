@@ -30,7 +30,16 @@ namespace toshi.VLiveKit.Utility
         [ContextMenu("GetAudioListeners")]
         private void GetAudioListeners()
         {
-            audioListeners = FindObjectsOfType<AudioListener>();
+            audioListeners = FindSceneObjects<AudioListener>();
+        }
+
+        private static T[] FindSceneObjects<T>() where T : Object
+        {
+#if UNITY_2022_2_OR_NEWER || UNITY_2023_1_OR_NEWER || UNITY_6000_0_OR_NEWER
+            return Object.FindObjectsByType<T>(FindObjectsSortMode.None);
+#else
+            return Object.FindObjectsOfType<T>();
+#endif
         }
 
         [ContextMenu("DisableAudioListeners")]

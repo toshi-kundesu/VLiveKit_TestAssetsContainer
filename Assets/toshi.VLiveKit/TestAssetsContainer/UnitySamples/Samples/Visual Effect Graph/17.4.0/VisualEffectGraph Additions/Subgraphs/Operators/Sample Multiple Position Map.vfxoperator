@@ -97,7 +97,7 @@ MonoBehaviour:
   - name: PositionCount
     path: PositionCount
     tooltip: 
-    space: -1
+    space: 0
     spaceable: 0
     sheetType: m_Int
     realType: Int32
@@ -113,7 +113,7 @@ MonoBehaviour:
   - name: PositionMap
     path: PositionMap
     tooltip: 
-    space: -1
+    space: 0
     spaceable: 0
     sheetType: m_NamedObject
     realType: Texture2D
@@ -129,7 +129,7 @@ MonoBehaviour:
   - name: Progress
     path: Progress
     tooltip: 
-    space: -1
+    space: 0
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -145,7 +145,7 @@ MonoBehaviour:
   - name: Bezier Smooth
     path: Bezier Smooth
     tooltip: 
-    space: -1
+    space: 0
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -161,7 +161,7 @@ MonoBehaviour:
   - name: Bezier Min Smooth
     path: Bezier Min Smooth
     tooltip: 
-    space: -1
+    space: 0
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -217,9 +217,9 @@ MonoBehaviour:
     position:
       serializedVersion: 2
       x: -2282
-      y: 340
-      width: 725
-      height: 329
+      y: 411
+      width: 696
+      height: 259
     contents:
     - model: {fileID: 190}
       id: 0
@@ -579,7 +579,7 @@ MonoBehaviour:
   - {fileID: 214}
   m_ExposedName: PositionMap
   m_Exposed: 1
-  m_Order: 4
+  m_Order: 3
   m_Category: 
   m_Min:
     m_Type:
@@ -614,7 +614,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 214}
       inputSlot: {fileID: 195}
-    position: {x: -2081.3333, y: 398.66666}
+    position: {x: -2066, y: 471}
     expandedSlots: []
     expanded: 0
     supecollapsed: 0
@@ -657,7 +657,7 @@ MonoBehaviour:
   - {fileID: 73}
   m_ExposedName: Progress
   m_Exposed: 1
-  m_Order: 5
+  m_Order: 4
   m_Category: 
   m_Min:
     m_Type:
@@ -748,7 +748,8 @@ MonoBehaviour:
   - {fileID: 103}
   m_OutputSlots:
   - {fileID: 104}
-  m_Subgraph: {fileID: 5371698745253816930, guid: 6e99b30cf4c48734ba804fe89447c0b6, type: 3}
+  m_Subgraph: {fileID: 5371698745253816930, guid: 6e99b30cf4c48734ba804fe89447c0b6,
+    type: 3}
 --- !u!114 &101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2365,7 +2366,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"276d9e395ae18fe40a9b4988549f2349","type":3}}'
+      m_SerializableObject: 
     m_Space: -1
   m_Property:
     name: texture
@@ -2733,7 +2734,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"276d9e395ae18fe40a9b4988549f2349","type":3}}'
+      m_SerializableObject: 
     m_Space: -1
   m_Property:
     name: texture
@@ -4662,7 +4663,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"276d9e395ae18fe40a9b4988549f2349","type":3}}'
+      m_SerializableObject: 
     m_Space: -1
   m_Property:
     name: texture
@@ -4998,7 +4999,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"276d9e395ae18fe40a9b4988549f2349","type":3}}'
+      m_SerializableObject: 
     m_Space: -1
   m_Property:
     name: texture
@@ -7934,7 +7935,7 @@ MonoBehaviour:
   m_OutputSlots: []
   m_ExposedName: bezier
   m_Exposed: 0
-  m_Order: 1
+  m_Order: 0
   m_Category: 
   m_Min:
     m_Type:
@@ -8117,7 +8118,7 @@ MonoBehaviour:
   m_OutputSlots: []
   m_ExposedName: linear
   m_Exposed: 0
-  m_Order: 3
+  m_Order: 2
   m_Category: 
   m_Min:
     m_Type:
@@ -9057,7 +9058,7 @@ MonoBehaviour:
   - {fileID: 606}
   m_ExposedName: Bezier Smooth
   m_Exposed: 1
-  m_Order: 6
+  m_Order: 5
   m_Category: 
   m_Min:
     m_Type:
@@ -11367,7 +11368,7 @@ MonoBehaviour:
   - {fileID: 707}
   m_ExposedName: Bezier Min Smooth
   m_Exposed: 1
-  m_Order: 7
+  m_Order: 6
   m_Category: 
   m_Min:
     m_Type:
@@ -12196,7 +12197,7 @@ MonoBehaviour:
   m_OutputSlots: []
   m_ExposedName: bezier tangent
   m_Exposed: 0
-  m_Order: 2
+  m_Order: 1
   m_Category: 
   m_Min:
     m_Type:

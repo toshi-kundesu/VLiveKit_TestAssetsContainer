@@ -1259,8 +1259,8 @@ public class FpsDisplay : MonoBehaviour
     private void SampleObjectCounts()
     {
         // 重い。常時ONではなく検証時のみ推奨。
-        sceneGameObjectCount = UnityEngine.Object.FindObjectsOfType<GameObject>().Length;
-        sceneComponentCount = UnityEngine.Object.FindObjectsOfType<Component>().Length;
+        sceneGameObjectCount = FindSceneObjects<GameObject>().Length;
+        sceneComponentCount = FindSceneObjects<Component>().Length;
 
         if (showLoadedAssetCounts)
         {
@@ -1518,7 +1518,7 @@ public class FpsDisplay : MonoBehaviour
             tmpText.fontSize = fontSize;
             tmpText.color = activeColor;
             tmpText.alignment = GetTmpAlignment();
-            tmpText.enableWordWrapping = false;
+            tmpText.textWrappingMode = TextWrappingModes.NoWrap;
             tmpText.overflowMode = TextOverflowModes.Overflow;
             tmpText.raycastTarget = false;
         }
@@ -1529,6 +1529,15 @@ public class FpsDisplay : MonoBehaviour
             guiStyle.normal.textColor = activeColor;
             guiStyle.alignment = GetTextAnchor();
         }
+    }
+
+    private static T[] FindSceneObjects<T>() where T : UnityEngine.Object
+    {
+#if UNITY_2022_2_OR_NEWER || UNITY_2023_1_OR_NEWER || UNITY_6000_0_OR_NEWER
+        return UnityEngine.Object.FindObjectsByType<T>(FindObjectsSortMode.None);
+#else
+        return UnityEngine.Object.FindObjectsOfType<T>();
+#endif
     }
 
     private Color GetActiveColor()

@@ -3,6 +3,8 @@ using UnityEngine;
 using TMPro;
 using toshi.VLiveKit.Photography;
 
+#pragma warning disable 0414
+
 [DefaultExecutionOrder(100)]
 // [ExecuteAlways]
 public class ColorPaletteDisplay : MonoBehaviour
@@ -161,3 +163,5 @@ public class ColorPaletteDisplay : MonoBehaviour
     //     return tex;
     // }
 }
+
+#pragma warning restore 0414

@@ -1,0 +1,29 @@
+{
+    "name": "KlutterTools.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:606dc61d41d874577bdfdc9a83bcb696"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.render-pipelines.high-definition",
+            "expression": "1.0.0",
+            "define": "KLUTTER_TOOLS_HAS_HDRP"
+        },
+        {
+            "name": "com.unity.visualeffectgraph",
+            "expression": "1.0.0",
+            "define": "KLUTTER_TOOLS_HAS_VFXGRAPH"
+        }
+    ],
+    "noEngineReferences": false
+}
