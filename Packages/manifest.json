@@ -1,5 +1,19 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "npmjs",
+      "url": "https://registry.npmjs.com",
+      "scopes": [
+        "ga.fuquna",
+        "jp.keijiro"
+      ]
+    }
+  ],
   "dependencies": {
+    "ga.fuquna.vatbaker": "1.0.5",
+    "jp.keijiro.neolowman": "1.0.1",
+    "jp.lilxyzw.liltoon": "https://github.com/lilxyzw/lilToon.git?path=Assets/lilToon#2.3.2",
+    "net.santarh.sth-shader": "https://github.com/Santarh/SthShader.git?path=/Packages/net.santarh.sth-shader#2f6d70ff44f4d0fef51195858a0173f807a5c23e",
     "com.unity.feature.development": "1.0.1",
     "com.unity.render-pipelines.high-definition": "17.3.0",
     "com.unity.textmeshpro": "3.0.6",

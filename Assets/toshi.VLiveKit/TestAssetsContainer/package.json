@@ -13,6 +13,10 @@
                    },
     "license":  "Unlicense",
     "dependencies": {
+        "ga.fuquna.vatbaker": "1.0.5",
+        "jp.keijiro.neolowman": "1.0.1",
+        "jp.lilxyzw.liltoon": "2.3.2",
+        "net.santarh.sth-shader": "0.1.0",
         "com.unity.cinemachine": "2.9.7",
         "com.unity.collections": "2.1.0",
         "com.unity.inputsystem": "1.7.0",
