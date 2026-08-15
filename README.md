@@ -24,7 +24,7 @@ Unity でのバーチャルライブ制作、検証、デバッグに使うテ�
 | `UVCheckerTexture` | UV 確認用テクスチャ |
 | `VJUI` | VJ / ライブ演出向け UI サンプル |
 | `mixamo` | モーション / キャラクター確認用素材 |
-| `ThirdParty` | 検証に使うサードパーティ製パッケージ |
+| UPM dependencies | Vat Baker / NeoLowMan / lilToon / Sth Shader は `package.json` / `Packages/manifest.json` で解決 |
 
 ## 主な機能
 
@@ -74,7 +74,7 @@ Unity でのバーチャルライブ制作、検証、デバッグに使うテ�
 | Poly Haven HDRI | ライティング確認用 HDRI | CC0 | https://polyhaven.com/hdris |
 | VJUI | VJ / UI 検証用 prefab | Unlicense | https://github.com/keijiro/VJUI |
 
-詳細は各フォルダ内の `LICENSE`、`LICENSE.txt`、`package.json`、または配布元を確認してください。
+サードパーティ製パッケージの詳細は Unity の依存解決後に各 upstream package の `LICENSE`、`LICENSE.txt`、`package.json`、または配布元を確認してください。
 
 ## ライセンス
 

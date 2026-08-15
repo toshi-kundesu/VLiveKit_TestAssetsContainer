@@ -1,5 +1,33 @@
 {
   "dependencies": {
+    "ga.fuquna.vatbaker": {
+      "version": "1.0.5",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://registry.npmjs.com"
+    },
+    "jp.keijiro.neolowman": {
+      "version": "1.0.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://registry.npmjs.com"
+    },
+    "jp.lilxyzw.liltoon": {
+      "version": "https://github.com/lilxyzw/lilToon.git?path=Assets/lilToon#2.3.2",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "56d5095b02e795bc60b5f80f72558d7835c5c14e"
+    },
+    "net.santarh.sth-shader": {
+      "version": "https://github.com/Santarh/SthShader.git?path=/Packages/net.santarh.sth-shader#2f6d70ff44f4d0fef51195858a0173f807a5c23e",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2f6d70ff44f4d0fef51195858a0173f807a5c23e"
+    },
     "com.unity.burst": {
       "version": "1.8.8",
       "depth": 1,
